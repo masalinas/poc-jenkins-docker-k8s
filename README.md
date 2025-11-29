@@ -37,17 +37,17 @@ $ docker run -d \
 
 Where: 
 
--d: detach mode
---name jenkins: friendly container name
--p 8088:8080 -p 50000:50000: ports published
--v /var/run/docker.sock:/var/run/docker.sock: share the host docker engine
--v /usr/bin/docker:/usr/bin/docker: share the host docker CLI
--v $HOME/.docker:/var/jenkins_home/.docker: externalize jenkins state in a volume
---group-add $(getent group docker | cut -d: -f3): add jenkins user to the host docker group
--v /usr/local/bin/kubectl:/usr/local/bin/kubectl: share host kubectl CLI
--v $HOME/.kube:/var/jenkins_home/.kube: share host kubect configuration
--v $HOME/.minikube:/home/kubernetes/.minikube: share host kubernetes configuration (minikube) and credentials
--v /usr/local/bin/helm:/usr/local/bin/helm: share host helm CLI
---network minikube: deploy jenkins in minikube network
-jenkins/jenkins: use standard jenkins docker image
+- `-d`: detach mode
+- `--name jenkins`: friendly container name
+- `-p 8088:8080 -p 50000:50000`: ports published
+- `-v /var/run/docker.sock:/var/run/docker.sock`: share the host docker engine
+- `-v /usr/bin/docker:/usr/bin/docker`: share the host docker CLI
+- `-v $HOME/.docker:/var/jenkins_home/.docker`: externalize jenkins state in a volume
+- `--group-add $(getent group docker | cut -d: -f3)`: add jenkins user to the host docker group
+- `-v /usr/local/bin/kubectl:/usr/local/bin/kubectl`: share host kubectl CLI
+- `-v $HOME/.kube:/var/jenkins_home/.kube`: share host kubect configuration
+- `-v $HOME/.minikube:/home/kubernetes/.minikube`: share host kubernetes configuration (minikube) and credentials
+- `-v /usr/local/bin/helm:/usr/local/bin/helm`: share host helm CLI
+- `--network minikube`: deploy jenkins in minikube network
+- `jenkins/jenkins`: use standard jenkins docker image
 
