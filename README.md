@@ -39,15 +39,16 @@ Where:
 
 - `-d`: detach mode
 - `--name jenkins`: friendly container name
-- `-p 8088:8080 -p 50000:50000`: ports published
+- `-v jenkins:/var/jenkins_home`: externalize jenkins state in a volume
+- `-p 8088:8080 -p 50000:50000`: jenkins ports published
 - `-v /var/run/docker.sock:/var/run/docker.sock`: share the host docker engine
 - `-v /usr/bin/docker:/usr/bin/docker`: share the host docker CLI
-- `-v $HOME/.docker:/var/jenkins_home/.docker`: externalize jenkins state in a volume
+- `-v $HOME/.docker:/var/jenkins_home/.docker`: share the docker configuration to connect to docker hub
 - `--group-add $(getent group docker | cut -d: -f3)`: add jenkins user to the host docker group
 - `-v /usr/local/bin/kubectl:/usr/local/bin/kubectl`: share host kubectl CLI
-- `-v $HOME/.kube:/var/jenkins_home/.kube`: share host kubect configuration
-- `-v $HOME/.minikube:/home/kubernetes/.minikube`: share host kubernetes configuration (minikube) and credentials
+- `-v $HOME/.kube:/var/jenkins_home/.kube`: share host kubectl configuration
+- `-v $HOME/.minikube:/home/kubernetes/.minikube`: share host kubernetes configuration and credentials to connect to minikube cluster
 - `-v /usr/local/bin/helm:/usr/local/bin/helm`: share host helm CLI
-- `--network minikube`: deploy jenkins in minikube network
+- `--network minikube`: deploy jenkins inside minikube network next to minikube cluster
 - `jenkins/jenkins`: use standard jenkins docker image
 
