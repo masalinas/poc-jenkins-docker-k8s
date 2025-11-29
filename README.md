@@ -39,8 +39,8 @@ Where:
 
 - `-d`: detach mode
 - `--name jenkins`: friendly container name
-- `-v jenkins:/var/jenkins_home`: externalize jenkins state in a volume
 - `-p 8088:8080 -p 50000:50000`: jenkins ports published
+- `-v jenkins:/var/jenkins_home`: externalize jenkins state in a volume
 - `-v /var/run/docker.sock:/var/run/docker.sock`: share the host docker engine
 - `-v /usr/bin/docker:/usr/bin/docker`: share the host docker CLI
 - `-v $HOME/.docker:/var/jenkins_home/.docker`: share the docker configuration to connect to docker hub
