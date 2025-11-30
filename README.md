@@ -1,4 +1,4 @@
-# Jenkins integration
+# Description
 In this repository we try to explain how we can deploy jenkins as docker container integrated with:
 
 - Host Docker Engine
