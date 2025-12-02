@@ -39,7 +39,7 @@ $ minikube start
 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
 ```
 
--- **STEP02**: Deploy somme addons in minikube
+-- **STEP03**: Deploy somme addons in minikube
 
 Minikube offer a lot of addons to be enable. We will you the Dashboard and the ingress addons
 ```
@@ -49,7 +49,7 @@ $ minikube addons enable dashboard
 $ minikube addons enable ingress
 ```
 
--- **STEP03**: Interact with your cluster
+-- **STEP04**: Interact with your cluster from CLI
 
 Minikube not only start the cluster also, configured kubectl to interact with it, so now you can interact with the cluster is your installed the kubectl CLI first
 
@@ -87,3 +87,17 @@ kube-public            Active   35d
 kube-system            Active   35d
 kubernetes-dashboard   Active   35d
 ```
+
+-- **STEP05**: Interact with your cluster from Dashboard
+After installed dashboard addon we must first a proxy to connect to the dashboard service. minikube offer a this commans:
+
+```
+$ minikube dashboard
+🤔  Verifying dashboard health ...
+🚀  Launching proxy ...
+🤔  Verifying proxy health ...
+🎉  Opening http://127.0.0.1:37407/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/ in your default browser...
+Se está abriendo en una sesión de navegador existente.
+```
+
+![Kubernetes Dashboard](./images/dashboard_kubernetes.png "Kubernetes Dashboard")
