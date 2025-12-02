@@ -1,54 +1,89 @@
 # Description
-In this repository we try to explain how we can deploy jenkins as docker container integrated with:
-
-- Host Docker Engine
-- Host Minikube Cluster
-
-Using the jenkins vanilla `jenkins/jenkins` Docker Image. This deployment has the limitation that we must use the standard jenkins command `sh` to interact with Docker, Kubernetes or Helm to deploy our services in kubernetes.
-
+In this repository we try to explain how we can deploy a [minikube](https://minikube.sigs.k8s.io/docs/) cluster
 
 ## Deployment
-With this command we will installed the last jenkins integrate with:
 
-- Host Docker Engine
-- Host Docker CLI with the configuration to connect to docker hub
-- Host Minikube Cluster
-- Host kubectl CLI with the configuration to use minikube context
-- Host helm CLI using the kubectl configuration
+-- **STEP01**: install minikube
 
-We must use port 8088 because 8080 is used by minikube.
-
+For example to install the latest minikube stable release on x86-64 Linux using binary download
 ```
-$ docker run -d \
-  --name jenkins \
-  -p 8088:8080 -p 50000:50000 \
-  -v jenkins:/var/jenkins_home \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  -v /usr/bin/docker:/usr/bin/docker \
-  -v $HOME/.docker:/var/jenkins_home/.docker \
-  --group-add $(getent group docker | cut -d: -f3) \
-  -v /usr/local/bin/kubectl:/usr/local/bin/kubectl \
-  -v $HOME/.kube:/var/jenkins_home/.kube \
-  -v $HOME/.minikube:/home/kubernetes/.minikube \
-  -v /usr/local/bin/helm:/usr/local/bin/helm \
-  --network minikube \
-  jenkins/jenkins
+$ curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64
+$ sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
 ```
 
-Where: 
+-- **STEP02**: Start your cluster
+From a terminal with administrator access (but not logged in as root), run:
 
-- `-d`: detach mode
-- `--name jenkins`: friendly container name
-- `-p 8088:8080 -p 50000:50000`: jenkins ports published
-- `-v jenkins:/var/jenkins_home`: externalize jenkins state in a volume
-- `-v /var/run/docker.sock:/var/run/docker.sock`: share the host docker engine
-- `-v /usr/bin/docker:/usr/bin/docker`: share the host docker CLI
-- `-v $HOME/.docker:/var/jenkins_home/.docker`: share the docker configuration to connect to docker hub
-- `--group-add $(getent group docker | cut -d: -f3)`: add jenkins user to the host docker group
-- `-v /usr/local/bin/kubectl:/usr/local/bin/kubectl`: share host kubectl CLI
-- `-v $HOME/.kube:/var/jenkins_home/.kube`: share host kubectl configuration
-- `-v $HOME/.minikube:/home/kubernetes/.minikube`: share host kubernetes configuration and credentials to connect to minikube cluster
-- `-v /usr/local/bin/helm:/usr/local/bin/helm`: share host helm CLI
-- `--network minikube`: deploy jenkins inside minikube network next to minikube cluster
-- `jenkins/jenkins`: use standard jenkins docker image
+```
+$ minikube start
+😄  minikube v1.32.0 en Ubuntu 20.04 (vbox/amd64)
+🎉  minikube 1.37.0 is available! Download it: https://github.com/kubernetes/minikube/releases/tag/v1.37.0
+💡  To disable this notice, run: 'minikube config set WantUpdateNotification false'
 
+✨  Using the docker driver based on existing profile
+👍  Starting control plane node minikube in cluster minikube
+🚜  Pulling base image ...
+🔄  Restarting existing docker container for "minikube" ...
+🐳  Preparando Kubernetes v1.28.3 en Docker 24.0.7...
+🔗  Configurando CNI bridge CNI ...
+🔎  Verifying Kubernetes components...
+    ▪ Using image docker.io/kubernetesui/dashboard:v2.7.0
+    ▪ Using image docker.io/kubernetesui/metrics-scraper:v1.0.8
+    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
+💡  Some dashboard features require the metrics-server addon. To enable all features please run:
+
+	minikube addons enable metrics-server	
+
+
+🌟  Complementos habilitados: storage-provisioner, default-storageclass, dashboard
+🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+```
+
+-- **STEP02**: Deploy somme addons in minikube
+
+Minikube offer a lot of addons to be enable. We will you the Dashboard and the ingress addons
+```
+$ minikube addons list
+
+$ minikube addons enable dashboard 
+$ minikube addons enable ingress
+```
+
+-- **STEP03**: Interact with your cluster
+
+Minikube not only start the cluster also, configured kubectl to interact with it, so now you can interact with the cluster is your installed the kubectl CLI first
+
+```
+$ kubectl get namespaces
+AME                   STATUS   AGE
+default                Active   35d
+kube-node-lease        Active   35d
+kube-public            Active   35d
+kube-system            Active   35d
+kubernetes-dashboard   Active   35d
+```
+
+Minikube carry a kubectl version and you can use it if you prefer:
+
+```
+$ minikube kubectl -- get namespaces
+AME                   STATUS   AGE
+default                Active   35d
+kube-node-lease        Active   35d
+kube-public            Active   35d
+kube-system            Active   35d
+kubernetes-dashboard   Active   35d
+```
+
+Create an alias for kubectl command to be not verbose:
+
+```
+$ alias kubectl="minikube kubectl --"
+$ kubectl get namespaces
+AME                   STATUS   AGE
+default                Active   35d
+kube-node-lease        Active   35d
+kube-public            Active   35d
+kube-system            Active   35d
+kubernetes-dashboard   Active   35d
+```
